@@ -3,7 +3,6 @@ import React from 'react';
 import { Cards } from '../api/cards.js';
 
 const CardsList = ({ cards }) => {
-  console.log(cards);
   return (
     <div>
       {cards.map((card) => (

@@ -1,9 +1,7 @@
 import React from 'react';
-import Cards from './Cards.jsx';
+import Games from './Games.jsx';
+import {AppRouter} from './routes';
 
 export const App = () => (
-  <div>
-    <h1>Welcome to Meteor!</h1>
-    <Cards />
-  </div>
+    <AppRouter/>
 );
