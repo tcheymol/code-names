@@ -1,18 +1,18 @@
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
+import styled from 'styled-components';
 import { Games } from '../api/games.js';
 import { Participants } from '../api/participants.js';
-import JoinGameForm from './JoinGameForm';
-import styled from 'styled-components';
 import GameTable from './GameTable.jsx';
+import JoinGameForm from './JoinGameForm';
 
 const StyledPaper = styled(Paper)`
   color: white;
@@ -23,8 +23,9 @@ const StyledPaper = styled(Paper)`
 `;
 
 
-const GameCard = ({ game, blueParticipants, redParticipants, currentParticipant}) => {
+const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}) => {
   if (!game) return null;
+  const isAdmin = currentParticipant && game.adminId === currentParticipant._id;
   const startGame = () => {
     Games.update(game._id, {
       $set: { isStarted: true },
@@ -57,7 +58,7 @@ const GameCard = ({ game, blueParticipants, redParticipants, currentParticipant}
                   Vous êtes : {currentParticipant.color === 'blue' ? 'Bleu' : 'Rouge'}
                 </Typography>
               </div>
-              {currentParticipant.isAdmin ?  (
+              {isAdmin ?  (
                 <span style={{fontSize: 40, color: 'gold'}}>👑 Admin</span>
               ) : null}
             </>
@@ -67,7 +68,7 @@ const GameCard = ({ game, blueParticipants, redParticipants, currentParticipant}
               <span style={{fontSize: 40, color: 'whitesmoke'}}>Partie en cours</span>
             ) : (
               <>
-                {currentParticipant && currentParticipant.isAdmin && game.redLeaderId && game.blueLeaderId ?  (
+                {isAdmin && game.redLeaderId && game.blueLeaderId ?  (
                   <Button onClick={startGame} variant="contained">Commencer la partie</Button>
                 ) : null}
               </>
@@ -98,7 +99,7 @@ const GameCard = ({ game, blueParticipants, redParticipants, currentParticipant}
                     <div key={participant._id} style={{color: 'white', display: 'flex', justifyContent: 'space-between'}}> 
                       {participant.name}
                       {participant._id === game.blueLeaderId ? <span>👑</span> : null}
-                      {!game.isStarted && currentParticipant && currentParticipant.isAdmin ?  (
+                      {!game.isStarted && isAdmin ?  (
                         <Button variant="outlined" onClick={() => updateBlueLeader(participant._id)}>Choisir comme leader</Button>
                       ) : null }
                     </div>
@@ -130,7 +131,7 @@ const GameCard = ({ game, blueParticipants, redParticipants, currentParticipant}
                     <div key={participant._id} style={{color: 'white', display: 'flex', justifyContent: 'space-between'}}> 
                       {participant.name}
                       {participant._id === game.redLeaderId ? <span>👑</span> : null}
-                      {!game.isStarted && currentParticipant && currentParticipant.isAdmin ?  (
+                      {!game.isStarted && isAdmin ?  (
                         <Button variant="outlined" onClick={() => updateRedLeader(participant._id)}>Choisir comme leader</Button>
                       ) : null }
                     </div>
@@ -151,7 +152,7 @@ const GameCard = ({ game, blueParticipants, redParticipants, currentParticipant}
 export default withTracker(({match}) => {
   const gameId = match.params.id;
   const games = Games.find({_id: gameId}).fetch()
-  const currentParticipantId = localStorage.getItem('participantId');
+  const currentParticipantId = localStorage.getItem(gameId);
   const participants = Participants.find({_id: currentParticipantId, gameId}).fetch()
 
   return {
@@ -160,4 +161,4 @@ export default withTracker(({match}) => {
     redParticipants: Participants.find({gameId, color: 'red'}).fetch(),
     currentParticipant: participants[0],
   };
-})(GameCard);
+})(GamePage);

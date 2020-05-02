@@ -1,20 +1,28 @@
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import { Formik } from 'formik';
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import { Games } from '../api/games.js';
 import { Participants } from '../api/participants.js';
 
 const JoinGameForm = ({ gameId, color, participants }) => (
   <Formik
     initialValues={{ name: '' }}
     onSubmit={(values, { setSubmitting }) => {
-      const participantId = Participants.insert({
-        name: values.name,
-        gameId,
-        color,
-        isAdmin: !participants || participants.length === 0,
-      });
-      localStorage.setItem('participantId', participantId);
+      if (values.name.length > 0) {
+        const participantId = Participants.insert({
+          name: values.name,
+          gameId,
+          color,
+          isAdmin: !participants || participants.length === 0,
+        });
+        if (!participants || participants.length === 0) {
+          Games.update(gameId, {
+            $set: { adminId: participantId },
+          });
+        }
+        localStorage.setItem(gameId, participantId);
+      }
     }}
   >
     {({

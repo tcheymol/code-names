@@ -1,19 +1,17 @@
 import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
 import { Games } from '../api/games.js';
-import GameForm from './GameForm';
 import GameCard from './GameCard';
+import GameForm from './GameForm';
 
-const GamesList = ({ games }) => {
-  return (
+const GamesList = ({ games }) => (
     <div>
       <GameForm />
       {games.map((game) => (
-        <GameCard key={game.id} game={game} />
+        <GameCard key={game._id} game={game} />
       ))}
     </div>
   );
-};
 
 export default withTracker(() => {
   return {
