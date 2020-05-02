@@ -16,6 +16,7 @@ import { Games } from '../api/games.js';
 import { Participants } from '../api/participants.js';
 import GameTable from './GameTable.jsx';
 import JoinGameForm from './JoinGameForm';
+import { Rules } from './Rules';
 
 const StyledPaper = styled(Paper)`
   color: white;
@@ -46,6 +47,7 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
   }
   return (
     <div>
+      <Rules/>
       <Card style={{marginTop: 16, marginBottom: 16}}>
         <CardContent style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <Link to="/">
@@ -101,8 +103,6 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
                   </Grid>
                 ) : null}
                 <Grid item xs={!currentParticipant && !game.isStarted ? 6 : 12}>
-                  <Typography variant='h6' component='h6'  style={{color: 'white'}}>Participants</Typography>
-                  <Divider/>
                   <div style={{marginTop: 16}}> </div>
                   {blueParticipants.map((participant) => (
                     <div key={participant._id} style={{color: 'white', display: 'flex', justifyContent: 'space-between'}}> 
@@ -135,8 +135,6 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
                 </Grid>
                   ) : null }
                 <Grid item xs={!currentParticipant && !game.isStarted ? 6 : 12}>
-                  <Typography variant='h6' component='h6'  style={{color: 'white'}}>Participants</Typography>
-                  <Divider/>
                   <div style={{marginTop: 16}}> </div>
                   {redParticipants.map((participant) => (
                     <div key={participant._id} style={{color: 'white', display: 'flex', justifyContent: 'space-between'}}> 
