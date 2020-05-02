@@ -1,12 +1,11 @@
-import { Formik } from 'formik';
-import { withTracker } from 'meteor/react-meteor-data';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import { Formik } from 'formik';
 import React from 'react';
-import { Games } from '../api/games.js';
 import { Cards } from '../api/cards.js';
+import { Games } from '../api/games.js';
 
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
@@ -16,6 +15,51 @@ function shuffle(a) {
   return a;
 }
 
+const getGameWords = () => {
+  let words = Cards.find({}).fetch();
+  wordsSample = [];
+  startingTeam = Math.random() >= 0.5;
+  redTeamCardsCount = 8;
+  blueTeamCardsCount = 8;
+  if (startingTeam) {
+    redTeamCardsCount++;
+  } else {
+    blueTeamCardsCount++;
+  }
+  for (let i = 1; i <= 7; i++) {
+    const newWord = words[Math.floor(Math.random() * words.length)];
+    wordsSample.push({
+      ...newWord,
+      color: 'neutral'
+    });
+    words = [...words.filter((word) => word._id !== newWord._id)];
+  }
+  for (let i = 1; i <= redTeamCardsCount; i++) {
+    const newWord = words[Math.floor(Math.random() * words.length)];
+    wordsSample.push({
+      ...newWord,
+      color: 'red'
+    });
+    words = [...words.filter((word) => word._id !== newWord._id)];
+  }
+  for (let i = 1; i <= blueTeamCardsCount; i++) {
+    const newWord = words[Math.floor(Math.random() * words.length)];
+    wordsSample.push({
+      ...newWord,
+      color: 'blue'
+    });
+    words = [...words.filter((word) => word._id !== newWord._id)];
+  }
+  const newWord = words[Math.floor(Math.random() * words.length)];
+  wordsSample.push({
+    ...newWord,
+    color: 'black'
+  });
+  words = [...words.filter((word) => word._id !== newWord._id)];
+  
+  return  shuffle(wordsSample);
+}
+
 const GameForm = ({ words }) =>  (
     <Formik
       initialValues={{ name: '' }}
@@ -23,7 +67,7 @@ const GameForm = ({ words }) =>  (
         if (values.name.length > 0) {
           Games.insert({
             name: values.name,
-            cards: words,
+            cards: getGameWords(),
             isStarted: false,
             shownCardsIds: [],
           });
@@ -69,48 +113,4 @@ const GameForm = ({ words }) =>  (
     </Formik>
   );
 
-export default withTracker(() => {
-  let words = Cards.find({}).fetch();
-  wordsSample = [];
-  startingTeam = Math.random() >= 0.5;
-  redTeamCardsCount = 8;
-  blueTeamCardsCount = 8;
-  if (startingTeam) {
-    redTeamCardsCount++;
-  } else {
-    blueTeamCardsCount++;
-  }
-  for (let i = 1; i <= 7; i++) {
-    const newWord = words[Math.floor(Math.random() * words.length)];
-    wordsSample.push({
-      ...words[Math.floor(Math.random() * words.length)],
-      color: 'neutral'
-    });
-    words = words.filter((word) => word._id !== newWord._id);
-  }
-  for (let i = 1; i <= redTeamCardsCount; i++) {
-    const newWord = words[Math.floor(Math.random() * words.length)];
-    wordsSample.push({
-      ...words[Math.floor(Math.random() * words.length)],
-      color: 'red'
-    });
-    words = words.filter((word) => word._id !== newWord._id);
-  }
-  for (let i = 1; i <= blueTeamCardsCount; i++) {
-    const newWord = words[Math.floor(Math.random() * words.length)];
-    wordsSample.push({
-      ...words[Math.floor(Math.random() * words.length)],
-      color: 'blue'
-    });
-    words = words.filter((word) => word._id !== newWord._id);
-  }
-  const newWord = words[Math.floor(Math.random() * words.length)];
-  wordsSample.push({
-    ...words[Math.floor(Math.random() * words.length)],
-    color: 'black'
-  });
-  words = words.filter((word) => word._id !== newWord._id);
-  return {
-    words: shuffle(wordsSample)
-  };
-})(GameForm);
+export default GameForm;

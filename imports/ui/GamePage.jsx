@@ -6,8 +6,11 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import HomeIcon from '@material-ui/icons/Home';
+import LockIcon from '@material-ui/icons/Lock';
 import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Games } from '../api/games.js';
 import { Participants } from '../api/participants.js';
@@ -45,8 +48,11 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
     <div>
       <Card style={{marginTop: 16, marginBottom: 16}}>
         <CardContent style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Link to="/">
+            <Button variant="outlined" startIcon={<HomeIcon />}>Accueil</Button>
+          </Link>
           <Typography variant='h5' component='h2'>
-          {game.name}
+          Partie : {game.name}
           </Typography>
           {!currentParticipant ? null : (
             <>
@@ -59,7 +65,7 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
                 </Typography>
               </div>
               {isAdmin ?  (
-                <span style={{fontSize: 40, color: 'gold'}}>👑 Admin</span>
+                <span style={{fontSize: 25, color: 'gold'}}><LockIcon /> Chef de partie</span>
               ) : null}
             </>
           )}
@@ -69,7 +75,10 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
             ) : (
               <>
                 {isAdmin && game.redLeaderId && game.blueLeaderId ?  (
+                  <div style={{display: 'flex', flexDirection: 'column'}}>
                   <Button onClick={startGame} variant="contained">Commencer la partie</Button>
+                  <span style={{maxWidth: 200}}>Attention, une fois la partie commencée, plus personne ne pourra la rejoindre</span>
+                  </div>
                 ) : null}
               </>
             )}
@@ -98,9 +107,10 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
                   {blueParticipants.map((participant) => (
                     <div key={participant._id} style={{color: 'white', display: 'flex', justifyContent: 'space-between'}}> 
                       {participant.name}
-                      {participant._id === game.blueLeaderId ? <span>👑</span> : null}
+                      {participant._id === game.adminId ? <span>(Chef de partie)</span> : null}
+                      {participant._id === game.blueLeaderId ? <span>(Chef d'équipe)</span> : null}
                       {!game.isStarted && isAdmin ?  (
-                        <Button variant="outlined" onClick={() => updateBlueLeader(participant._id)}>Choisir comme leader</Button>
+                        <Button variant="outlined" onClick={() => updateBlueLeader(participant._id)}>Choisir comme chef bleu</Button>
                       ) : null }
                     </div>
                   ))}
@@ -119,20 +129,22 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
               </Typography>
               <Divider/>
               <Grid container style={{ marginTop: 16}}>
-                <Grid item xs={6}>
                   {!currentParticipant && !game.isStarted ?  (
-                    <JoinGameForm gameId={game._id} color="red"  participants={[...blueParticipants, ...redParticipants]}/>
-                  ) : null }
-                </Grid>
                 <Grid item xs={6}>
+                    <JoinGameForm gameId={game._id} color="red"  participants={[...blueParticipants, ...redParticipants]}/>
+                </Grid>
+                  ) : null }
+                <Grid item xs={!currentParticipant && !game.isStarted ? 6 : 12}>
                   <Typography variant='h6' component='h6'  style={{color: 'white'}}>Participants</Typography>
                   <Divider/>
+                  <div style={{marginTop: 16}}> </div>
                   {redParticipants.map((participant) => (
                     <div key={participant._id} style={{color: 'white', display: 'flex', justifyContent: 'space-between'}}> 
                       {participant.name}
-                      {participant._id === game.redLeaderId ? <span>👑</span> : null}
+                      {participant._id === game.adminId ? <span>(Chef de partie)</span> : null}
+                      {participant._id === game.redLeaderId ? <span>(Chef d'équipe)</span> : null}
                       {!game.isStarted && isAdmin ?  (
-                        <Button variant="outlined" onClick={() => updateRedLeader(participant._id)}>Choisir comme leader</Button>
+                        <Button variant="outlined" onClick={() => updateRedLeader(participant._id)}>Choisir comme chef rouge</Button>
                       ) : null }
                     </div>
                   ))}
