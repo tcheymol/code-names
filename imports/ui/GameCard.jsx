@@ -4,6 +4,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
+import LockIcon from '@material-ui/icons/Lock';
 import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -22,7 +23,7 @@ const GameCard = ({ game, currentParticipant }) => {
           {game.name}
           </Typography>
           {isAdmin ?  (
-            <span style={{fontSize: 40, color: 'gold'}}>👑 Admin</span>
+            <span style={{fontSize: 25, color: 'gold'}}><LockIcon /> Vous êtes chef de cette partie</span>
             ) : null}
         </CardContent>
         <CardActions style={{justifyContent: 'space-between'}}>

@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import Slide from '@material-ui/core/Slide';
 import Typography from '@material-ui/core/Typography';
+import GitHub from '@material-ui/icons/GitHub';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -24,11 +25,14 @@ export const Rules = () => {
   
   return(
     <Paper style={{padding: 16, marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-      <Button variant='contained' type='submit' onClick={() => setOpenRules(true)}>
+      <Button variant='contained' onClick={() => setOpenRules(true)}>
         Règles
       </Button>
-      <Button variant='contained' type='submit' onClick={() => setOpenExplainations(true)}>
+      <Button variant='contained' onClick={() => setOpenExplainations(true)}>
         Fonctionnement du site
+      </Button>
+      <Button variant='contained' startIcon={<GitHub/>} href="https://github.com/tcheymol/code-names" target="_blank">
+        Dépôt GitHub
       </Button>
       <Dialog
         open={openRules}
