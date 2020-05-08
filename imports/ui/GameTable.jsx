@@ -38,7 +38,7 @@ const GameTable = ({ game, currentParticipant}) => {
         } else if (card.color === 'red') {
           color = '#e74c3c';
         }else if (card.color === 'black') {
-          color = null;
+          color = '#2c3e50';
         } else {
           color = '#F2C50F';
         }
@@ -51,12 +51,12 @@ const GameTable = ({ game, currentParticipant}) => {
           {isLeader ? (
             <Grid item xs={2}>
                 <ButtonBase style={{width: '100%'}} onClick={() => showCard(card._id)}>
-                  <StyledPaper  style={{backgroundColor: color, width: '100%', border: `3px solid ${isShown ? '#27ae60' : 'transparent'}` }}>{card.text}</StyledPaper>
+                  <StyledPaper  style={{color: !isShown ? color : '#ecf0f1', backgroundColor: isShown ? color : '#ecf0f1', width: '100%', border: `3px solid ${!isShown ? color : 'transparent'}` }}>{card.text}</StyledPaper>
                 </ButtonBase>
             </Grid>
           ) : (
             <Grid item xs={2}>
-              <StyledPaper style={{backgroundColor: isShown ? color : null, width: '100%'}}>
+              <StyledPaper style={{color: isShown ? '#ecf0f1' : '#2c3e50', width: '100%', backgroundColor: isShown ? color : '#ecf0f1', width: '100%'}}>
                 {card.text}
               </StyledPaper>
             </Grid>
