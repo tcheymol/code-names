@@ -26,6 +26,11 @@ const GameCard = ({ game, currentParticipant }) => {
             <span style={{fontSize: 25, color: 'gold'}}><LockIcon /> Vous êtes chef de cette partie</span>
             ) : null}
         </CardContent>
+        {game.isOver && game.winner ? (
+          <Typography variant='h5' component='h2' style={{color: game.winner === 'blue' ? '#2980b9' : '#e74c3c', textAlign: 'center'}}>
+            {`Partie remportée par l'équipe ${game.winner === 'blue' ? 'Bleue' : 'Rouge'}`}
+          </Typography>
+        ) : null}
         <CardActions style={{justifyContent: 'space-between'}}>
           <Link to={`/game/${game._id}`} style={{textDecoration: 'none'}}>
           <Button variant="contained" color="primary">Voir la partie</Button>

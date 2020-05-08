@@ -21,11 +21,48 @@ const GameTable = ({ game, currentParticipant}) => {
   const isLeader = currentParticipant._id === game.blueLeaderId || currentParticipant._id === game.redLeaderId;
 
   const showCard = (cardId) => {
+    if (!game.isStarted || game.isOver) return;
+    
     result = window.confirm('Valider cette carte ?');
     if (result) {
       Games.update(game._id, {
         $set: { shownCardsIds: [...game.shownCardsIds, cardId] },
       });
+      let blueShownCardsCount = game.cards.filter((card) => {
+        return game.shownCardsIds && game.shownCardsIds.includes(card._id) && card.color === 'blue';
+      }).length;
+      let redShownCardsCount = game.cards.filter((card) => {
+        return game.shownCardsIds && game.shownCardsIds.includes(card._id) && card.color === 'red';
+      }).length;
+      let blackShownCardsCount = game.cards.filter((card) => {
+        return game.shownCardsIds && game.shownCardsIds.includes(card._id) && card.color === 'black';
+      }).length;
+      const shownCardColor = game.cards.find((card) => card._id === cardId).color;
+      if (shownCardColor === 'blue') {
+        blueShownCardsCount++;
+      } else if (shownCardColor === 'red') {
+        redShownCardsCount++;
+      } else if (shownCardColor === 'black') { 
+        blackShownCardsCount++;
+      }
+
+      let redCardsCount = 8;
+      let blueCardsCount = 8;
+      if (game.startingTeam === 'blue') {
+        blueCardsCount++;
+      } else {
+        redCardsCount++;
+      }
+      
+      if (blueCardsCount === blueShownCardsCount || redCardsCount === redShownCardsCount || 1 === blackShownCardsCount) {
+        let winner = blueCardsCount === blueShownCardsCount ? 'blue' : 'red';
+        if (1 === blackShownCardsCount) {
+          winner = currentParticipant.color === 'blue' ? 'red' : 'blue';
+        }
+        Games.update(game._id, {
+          $set: { isOver: true, winner },
+        });
+      }
     }
   }
 
