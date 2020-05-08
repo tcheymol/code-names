@@ -87,6 +87,13 @@ const GamePage = ({ game, blueParticipants, redParticipants, currentParticipant}
           </>
         </CardContent>
       </Card>
+      <Card style={{marginTop: 16, marginBottom: 16, backgroundColor: game.startingTeam === 'blue' ? '#2980b9' : '#e74c3c'}}>
+        <CardContent>
+          <Typography variant='h5' component='h2' style={{color: 'white', textAlign: 'center'}}>
+            {`L'Équipe ${game.startingTeam === 'blue' ? 'bleue' : 'rouge'} commence`}
+          </Typography>
+        </CardContent>
+      </Card>
       <Grid container spacing={3}>
         <Grid item xs={6}>
           <Card style={{marginTop: 16, marginBottom: 16, backgroundColor: '#2980b9'}}>

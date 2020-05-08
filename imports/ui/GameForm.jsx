@@ -15,13 +15,16 @@ function shuffle(a) {
   return a;
 }
 
-const getGameWords = () => {
+const getStartingTeam = () => {
+  return Math.random() >= 0.5 ? 'red' : 'blue';
+}
+
+const getGameWords = (startingTeam) => {
   let words = Cards.find({}).fetch();
   wordsSample = [];
-  startingTeam = Math.random() >= 0.5;
   redTeamCardsCount = 8;
   blueTeamCardsCount = 8;
-  if (startingTeam) {
+  if (startingTeam === 'red') {
     redTeamCardsCount++;
   } else {
     blueTeamCardsCount++;
@@ -65,9 +68,11 @@ const GameForm = ({ words }) =>  (
       initialValues={{ name: '' }}
       onSubmit={(values, { setSubmitting }) => {
         if (values.name.length > 0) {
+          const startingTeam = getStartingTeam();
           Games.insert({
             name: values.name,
-            cards: getGameWords(),
+            cards: getGameWords(startingTeam),
+            startingTeam,
             isStarted: false,
             shownCardsIds: [],
           });
